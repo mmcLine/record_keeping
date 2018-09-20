@@ -25,4 +25,5 @@ public class Order extends BeanBase {
 
     private String remarks;
 
+
 }

@@ -11,5 +11,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface InsertApi<T extends IdBase> extends DataBaseApi {
 
-    public boolean insert(T t);
+     Integer insert(T t);
 }

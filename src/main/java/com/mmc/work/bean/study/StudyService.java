@@ -2,7 +2,8 @@ package com.mmc.work.bean.study;
 
 import com.mmc.assist.result.Result;
 import com.mmc.assist.result.ResultUtil;
-import com.mmc.utils.SqlEngine;
+import com.mmc.work.database.api.InsertApi;
+import com.mmc.work.database.api.QueryApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +16,16 @@ import org.springframework.stereotype.Service;
 public class StudyService {
 
     @Autowired
-    private SqlEngine sqlEngine;
+    private QueryApi queryApi;
 
     @Autowired
-    private StudyRepository studyRepository;
+    private InsertApi insertApi;
 
     public Result list(Integer pageNo){
-        return sqlEngine.listBean(Study.class,pageNo);
+        return ResultUtil.writeSuccess(queryApi.listData(Study.class,pageNo,"",null));
     }
 
     public Result save(Study study){
-        return ResultUtil.writeSuccess(studyRepository.save(study));
+        return ResultUtil.writeSuccess(insertApi.insert(study));
     }
 }

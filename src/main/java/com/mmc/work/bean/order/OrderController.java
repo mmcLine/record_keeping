@@ -34,6 +34,5 @@ public class OrderController implements OrderApi {
     @Override
     public JSONObject monthchart() {
         return orderService.monthchart();
-//        return null;
     }
 }

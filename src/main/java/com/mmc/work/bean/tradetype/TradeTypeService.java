@@ -2,11 +2,11 @@ package com.mmc.work.bean.tradetype;
 
 import com.mmc.assist.result.Result;
 import com.mmc.assist.result.ResultUtil;
-import com.mmc.utils.SqlEngine;
+import com.mmc.work.database.api.InsertApi;
+import com.mmc.work.database.api.QueryApi;
+import com.mmc.work.database.api.UpdateApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 
 /**
  * @Author: mmc
@@ -17,18 +17,24 @@ import java.time.LocalDate;
 public class TradeTypeService {
 
     @Autowired
-    private SqlEngine sqlEngine;
+    private QueryApi queryApi;
 
     @Autowired
-    private TradeTypeRepository tradeTypeRepository;
+    private InsertApi insertApi;
+
+    @Autowired
+    private UpdateApi updateApi;
 
     public Result listCombo(){
-        return sqlEngine.listComboBean(TradeType.class);
+        return ResultUtil.writeSuccess(queryApi.listCombobox(TradeType.class));
     }
 
     public Result save(TradeType tradeType){
-        tradeType.setCreateTime(LocalDate.now());
-        tradeTypeRepository.save(tradeType);
+        if(tradeType.getPkey()==null){
+            insertApi.insert(tradeType);
+        }else {
+            updateApi.update(tradeType);
+        }
         return ResultUtil.writeSuccess();
     }
 }

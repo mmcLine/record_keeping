@@ -10,7 +10,7 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @Author: mmc
@@ -22,7 +22,7 @@ import java.time.LocalDate;
 public class SaveAopImpl {
 
 
-    @Pointcut("execution(public boolean  com.mmc.work.database.api.InsertApi.insert(..))")// the pointcut expression
+    @Pointcut("execution(public Integer com.mmc.work.database.api.InsertApi.insert(..))")// the pointcut expression
     private void anyOldTransfer() {}
 
     @Before("anyOldTransfer()")
@@ -36,10 +36,10 @@ public class SaveAopImpl {
                 BeanBase bean=(BeanBase)object;
                 bean.setUser(SpringContextUtil.getLoginUser().getUser());
                 bean.setFamily(SpringContextUtil.getLoginUser().getFamily());
-                bean.setCreateTime(LocalDate.now());
+                bean.setCreateTime(LocalDateTime.now());
             }else if(object instanceof IdBase){
                 IdBase bean=(IdBase)object;
-                bean.setCreateTime(LocalDate.now());
+                bean.setCreateTime(LocalDateTime.now());
             }
         }
     }

@@ -7,6 +7,10 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.Table;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Author: mmc
@@ -67,6 +71,19 @@ public class TableImpl implements TableApi {
         return sb.toString();
     }
 
+    public List<Field> getFields(Class clazz){
+        List<Field> list=new ArrayList<>();
+        //递归获取field
+        Class superClass=clazz;
+        String[] array;
+        while (superClass!=null){
+            Field[] declaredFields = superClass.getDeclaredFields();
+            Arrays.copyOf(declaredFields,declaredFields.length);
+            superClass=superClass.getSuperclass();
+        }
+        return null;
+    }
+
     /**
      * 类名转换为表名
      * 不能直接使用，因为没考虑@Table注解自定义了表名的情况
@@ -88,4 +105,6 @@ public class TableImpl implements TableApi {
         }
         return sb.toString();
     }
+
+
 }

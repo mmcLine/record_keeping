@@ -8,9 +8,15 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.beans.PropertyDescriptor;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +37,7 @@ public class InsertImpl<T extends IdBase> implements InsertApi<T> {
     private TableApi tableApi;
 
     @Override
-    public boolean insert(T t) {
+    public Integer insert(T t){
         StringBuilder sql = new StringBuilder();
         sql.append("insert into " + tableApi.getTable(t.getClass()) + "(");
         BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(t);
@@ -58,8 +64,22 @@ public class InsertImpl<T extends IdBase> implements InsertApi<T> {
             }
         }
         sql.append(")");
-        logger.info("执行插入语句：" + sql);
-        return jdbcTemplate.update(sql.toString(), valueList.toArray()) > 0;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(
+                new PreparedStatementCreator(){
+                    public java.sql.PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                        java.sql.PreparedStatement ps = conn.prepareStatement(sql.toString());
+                        ps = conn.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
+                        int i = 0;
+                        for(Object object:valueList){
+                            ps.setObject(++i,object);
+                        }
+                        return ps;
+                    }
+                },
+                keyHolder);
+
+        return keyHolder.getKey().intValue();
     }
 
 }

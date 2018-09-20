@@ -1,6 +1,7 @@
 package com.mmc.work.bean.user;
 
 
+import com.mmc.work.base.ExtName;
 import com.mmc.work.base.IdBase;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import javax.persistence.Entity;
 
 @Data
 @Entity
-public  class User extends IdBase {
+public  class User extends IdBase implements ExtName {
 
     private String name;
 
@@ -20,4 +21,13 @@ public  class User extends IdBase {
 
     private String password;
 
+    @Override
+    public String name() {
+        return getName();
+    }
+
+    @Override
+    public String fldName() {
+        return "name";
+    }
 }

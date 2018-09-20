@@ -1,36 +1,57 @@
 package com.mmc.work.database.api;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @Author: mmc
  * @Date: 2018/9/8 22:43
  * @Version 1.0
+ *
+ * find开头的方法为查询单个
+ * list开头的方法为查询集合
+ *
  */
 public interface QueryApi<T> extends DataBaseApi  {
 
-    //普通的表单查询,带分页的
-    List<T> listData(Class clazz, Integer pageNo, String where, String order);
 
-    //下拉的数据查询
-    List listCombobox(Class clazz);
 
     //根据pkey查询某个表的一个属性
     Object findFldByPkey(Class clazz, String fld, Integer pkey);
 
+
+    //根据where条件的参数和值去查询一个属性
+    Optional findFldByParams(Class<T> clazz, String fld, String[] paramNames, Object... objects);
+
     //根据pkey查询出一个对象
     T findByPkey(Class clazz, Integer pkey);
 
+    //根据pkey集合查询某一个对象集合
+    List<T> listByPkeyList(Class<T> clazz,Iterable<Integer> ids);
+
+
+    //根据where条件的参数和值去查询对象
+    T findByParams(Class<T> clazz,String[] paramNames,Object... objects);
+
     //根据where条件的参数和值去查询记录
-    List<T> listByParams(Class clazz,String[] paramNames,Object... objects);
+    List<T> listByParams(Class<T> clazz,String[] paramNames,Object... objects);
 
     //根据where条件的参数和值去查询某一个属性的记录
-    List findOneFldByParams(Class clazz,String fld,String[] paramNames,Object... objects);
+    List<Map<String,Object>> listOneFldByParams(Class clazz, String fld, String[] paramNames, Object... objects);
 
     //根据where条件的参数和值去查询多个个属性的记录
-    List findManyFldByParams(Class clazz,String[] flds,String[] paramNames,Object... objects);
+    List<Map<String,Object>> listManyFldByParams(Class clazz,String[] flds,String[] paramNames,Object... objects);
 
     //自定义sql语句查询
-    List query(String sql,Object... objects);
+    List<Map<String,Object>> query(String sql,Object... objects);
 
+    //普通的表单查询,带分页的
+    List<Map<String,Object>> listData(Class clazz, Integer pageNo, String where, String order);
+
+    //下拉的数据查询
+    List<Map<String,Object>> listCombobox(Class clazz);
+
+    //权限where
+    String getAuthorithWhere(Class clazz);
 }
