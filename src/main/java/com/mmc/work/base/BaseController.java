@@ -1,7 +1,8 @@
 package com.mmc.work.base;
 
 import com.mmc.assist.result.Result;
-import com.mmc.utils.SqlEngine;
+import com.mmc.assist.result.ResultUtil;
+import com.mmc.work.database.api.DeleteApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,10 +21,10 @@ import javax.validation.constraints.NotNull;
 public class BaseController {
 
     @Autowired
-    private SqlEngine sqlEngine;
+    private DeleteApi deleteApi;
 
     @RequestMapping("record/del")
     public Result delete(@RequestParam("className") @NotNull String className, String pkeys){
-       return sqlEngine.delete(className,pkeys);
+       return ResultUtil.writeSuccess(deleteApi.delete(className,pkeys));
     }
 }

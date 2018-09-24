@@ -18,6 +18,8 @@ public interface TableApi {
     //根据表名获取类名
     public String getClassName(String table);
 
+    //根据类名称获取表名
+    public String getTable(String className);
 
     //判断类是否有某属性
     public boolean hasPropertis(Class clazz,String fldName);

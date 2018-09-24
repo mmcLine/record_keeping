@@ -1,6 +1,5 @@
 package com.mmc.work.api;
 
-import com.alibaba.fastjson.JSONObject;
 import com.mmc.assist.result.Result;
 import com.mmc.work.bean.dateperiod.DatePeriod;
 import com.mmc.work.bean.order.Order;
@@ -18,8 +17,5 @@ public interface OrderApi {
     @RequestMapping("record/order/datelist")
     Result orderList(DatePeriod datePeriod);
 
-    //月消费报表
-    @RequestMapping("record/order/monthchart")
-    JSONObject monthchart();
 
 }

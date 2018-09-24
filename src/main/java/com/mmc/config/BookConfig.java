@@ -1,6 +1,6 @@
 package com.mmc.config;
 
-import com.mmc.assist.interceptor.RecordInterceptor;
+import com.mmc.assist.interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -12,8 +12,8 @@ public class BookConfig extends WebMvcConfigurationSupport {
 
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new RecordInterceptor()).addPathPatterns("/record/**").
-                excludePathPatterns("/login").order(1);
+        registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/record/**").
+                excludePathPatterns("/login").order(10);
     }
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -25,8 +25,11 @@ public class BookConfig extends WebMvcConfigurationSupport {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*")
+                .allowedHeaders("*")
+                .allowedMethods("*")
                 .allowCredentials(true)
-                .allowedMethods("GET", "POST", "DELETE", "PUT")
                 .maxAge(3600);
     }
+
+
 }

@@ -26,6 +26,19 @@ public class ResultUtil {
         return result;
     }
 
+    public static Result writeSuccess(Object data,Integer size){
+        Result result=new Result();
+        result.setCode("200");
+        result.setSuccess(true);
+        result.setMsg("Option Success");
+        if(size!=null&&size>0){
+            result.setData(new Result.Data(data,size));
+        }else {
+            result.setData(new Result.Data(data,0));
+        }
+        return result;
+    }
+
     public static Result writeSuccess(Object data){
         Result result=new Result();
         result.setCode("200");

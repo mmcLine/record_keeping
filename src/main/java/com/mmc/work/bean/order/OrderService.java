@@ -2,13 +2,14 @@ package com.mmc.work.bean.order;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mmc.assist.login.Idu;
 import com.mmc.assist.result.Result;
 import com.mmc.assist.result.ResultUtil;
-import com.mmc.utils.SpringContextUtil;
 import com.mmc.work.bean.marriage.Marriage;
 import com.mmc.work.bean.user.User;
 import com.mmc.work.database.api.InsertApi;
 import com.mmc.work.database.api.QueryApi;
+import com.mmc.work.database.api.QueryResultApi;
 import com.mmc.work.database.api.UpdateApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,8 +31,12 @@ public class OrderService {
     @Autowired
     private QueryApi<Order> queryApi;
 
+
+    @Autowired
+    private QueryResultApi queryResultApi;
+
     public Result orderList(int pageNo) {
-        return ResultUtil.writeSuccess(queryApi.listData(Order.class,pageNo,"",null));
+        return queryResultApi.listData(Order.class,pageNo);
     }
 
     public Result updOrder(Order order) {
@@ -44,18 +49,18 @@ public class OrderService {
     }
 
     public Result listByDate(LocalDate startDate, LocalDate endDate) {
-        return ResultUtil.writeSuccess(queryApi.listData(Order.class,1,"trade_date BETWEEN '" + startDate + "' AND '" + endDate + "'",null));
+       return queryResultApi.listData(Order.class,1,"trade_date BETWEEN '" + startDate + "' AND '" + endDate + "'",null);
     }
 
     public JSONObject monthchart() {
         //先判断权限，是否只能看到自己的,没有家庭权限，只查自己的数据
-        if (SpringContextUtil.getLoginUser().getFamily() == null) {
-            String sql="SELECT DATE_FORMAT(t.trade_date,'%Y-%m') month,SUM(t.amt) amtsum  FROM trade_order t where t.user=? GROUP BY MONTH";
-            List<Map<String,Object>> data=queryApi.query(sql,SpringContextUtil.getLoginUser().getUser());
+        if (Idu.getLoginUser().getFamily() == null) {
+            String sql="SELECT DATE_FORMAT(t.trade_date,'%Y-%m') month,CAST( SUM(t.amt) AS DECIMAL (15, 2)) amtsum  FROM trade_order t where t.user=? GROUP BY MONTH";
+            List<Map<String,Object>> data=queryApi.query(sql,Idu.getLoginUser().getUser());
             JSONArray monthArray = new JSONArray();
             JSONArray amtArray = new JSONArray();
             JSONArray nameArray = new JSONArray();
-            nameArray.add(queryApi.findFldByPkey(User.class,"name",SpringContextUtil.getLoginUser().getUser()));
+            nameArray.add(queryApi.findFldByPkey(User.class,"name",Idu.getLoginUser().getUser()));
             for (Map<String,Object> map : data) {
                 monthArray.add(map.get("month"));
                 amtArray.add(map.get("amtsum"));
@@ -66,7 +71,7 @@ public class OrderService {
         } else {
             //获取10个月
             String[] currentMonth = getCurrentMonth(10);
-            List<Map<String, Object>> userList = queryApi.listOneFldByParams(Marriage.class, "user", new String[]{"family"}, SpringContextUtil.getLoginUser().getFamily());
+            List<Map<String, Object>> userList = queryApi.listOneFldByParams(Marriage.class, "user",null);
             JSONArray amtJson=new JSONArray();
             JSONArray namesArray=new JSONArray();
             for(Map<String, Object> userMap:userList){

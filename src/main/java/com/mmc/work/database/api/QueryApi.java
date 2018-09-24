@@ -15,7 +15,10 @@ import java.util.Optional;
  */
 public interface QueryApi<T> extends DataBaseApi  {
 
-
+    enum SQL_ORDER{
+        DESC,
+        ASC;
+    }
 
     //根据pkey查询某个表的一个属性
     Object findFldByPkey(Class clazz, String fld, Integer pkey);
@@ -30,12 +33,14 @@ public interface QueryApi<T> extends DataBaseApi  {
     //根据pkey集合查询某一个对象集合
     List<T> listByPkeyList(Class<T> clazz,Iterable<Integer> ids);
 
-
     //根据where条件的参数和值去查询对象
     T findByParams(Class<T> clazz,String[] paramNames,Object... objects);
 
     //根据where条件的参数和值去查询记录
     List<T> listByParams(Class<T> clazz,String[] paramNames,Object... objects);
+
+    //根据where条件的参数和值去查询记录
+    List<T> listByWhere(Class<T> clazz,String where,Object... objects);
 
     //根据where条件的参数和值去查询某一个属性的记录
     List<Map<String,Object>> listOneFldByParams(Class clazz, String fld, String[] paramNames, Object... objects);
@@ -43,15 +48,7 @@ public interface QueryApi<T> extends DataBaseApi  {
     //根据where条件的参数和值去查询多个个属性的记录
     List<Map<String,Object>> listManyFldByParams(Class clazz,String[] flds,String[] paramNames,Object... objects);
 
-    //自定义sql语句查询
-    List<Map<String,Object>> query(String sql,Object... objects);
+    //自定义where语句，自行权限判断
+    List<Map<String,Object>> query(String sql,Object...objects);
 
-    //普通的表单查询,带分页的
-    List<Map<String,Object>> listData(Class clazz, Integer pageNo, String where, String order);
-
-    //下拉的数据查询
-    List<Map<String,Object>> listCombobox(Class clazz);
-
-    //权限where
-    String getAuthorithWhere(Class clazz);
 }

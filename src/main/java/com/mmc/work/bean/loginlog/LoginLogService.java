@@ -1,17 +1,11 @@
 package com.mmc.work.bean.loginlog;
 
 import com.mmc.assist.result.Result;
-import com.mmc.assist.result.ResultUtil;
-import com.mmc.work.bean.user.User;
 import com.mmc.work.database.api.InsertApi;
 import com.mmc.work.database.api.QueryApi;
+import com.mmc.work.database.api.QueryResultApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @Author: mmc
@@ -25,16 +19,18 @@ public class LoginLogService {
     private QueryApi queryApi;
 
     @Autowired
+    private QueryResultApi<LoginLog> queryResultApi;
+
+    @Autowired
     private InsertApi insertApi;
 
     public Result list(Integer pageNo){
-        List<Map<String,Object>> list = queryApi.listData(LoginLog.class, pageNo, "", null);
-        //将查询结果的用户转变为用户名
-        Set<Integer> userPkeySet=new HashSet<>();
-        list.stream().forEach(x->userPkeySet.add(Integer.valueOf(x.get("user").toString())));
-        List<User> userList = queryApi.listByPkeyList(User.class, userPkeySet);
-
-        return ResultUtil.writeSuccess(queryApi.listData(LoginLog.class,pageNo,"",null));
+//        List<Map<String,Object>> list = queryApi.listData(LoginLog.class, pageNo);
+//        //将查询结果的用户转变为用户名
+//        Set<Integer> userPkeySet=new HashSet<>();
+//        list.stream().forEach(x->userPkeySet.add(Integer.valueOf(x.get("user").toString())));
+//        List<User> userList = queryApi.listByPkeyList(User.class, userPkeySet);
+        return queryResultApi.listData(LoginLog.class,pageNo);
     }
 
     //添加登录日志

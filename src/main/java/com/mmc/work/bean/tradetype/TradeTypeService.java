@@ -4,6 +4,7 @@ import com.mmc.assist.result.Result;
 import com.mmc.assist.result.ResultUtil;
 import com.mmc.work.database.api.InsertApi;
 import com.mmc.work.database.api.QueryApi;
+import com.mmc.work.database.api.QueryResultApi;
 import com.mmc.work.database.api.UpdateApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class TradeTypeService {
 
     @Autowired
-    private QueryApi queryApi;
+    private QueryResultApi queryResultApi;
 
     @Autowired
     private InsertApi insertApi;
@@ -26,7 +27,7 @@ public class TradeTypeService {
     private UpdateApi updateApi;
 
     public Result listCombo(){
-        return ResultUtil.writeSuccess(queryApi.listCombobox(TradeType.class));
+        return queryResultApi.listCombobox(TradeType.class,QueryApi.SQL_ORDER.ASC);
     }
 
     public Result save(TradeType tradeType){

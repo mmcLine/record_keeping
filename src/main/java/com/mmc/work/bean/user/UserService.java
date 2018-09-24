@@ -5,6 +5,7 @@ import com.mmc.assist.result.ResultUtil;
 import com.mmc.utils.SHA512;
 import com.mmc.work.database.api.InsertApi;
 import com.mmc.work.database.api.QueryApi;
+import com.mmc.work.database.api.QueryResultApi;
 import com.mmc.work.database.api.UpdateApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,9 @@ public class UserService {
     Logger logger=LoggerFactory.getLogger(UserService.class);
 
     @Autowired
+    private QueryResultApi<User> queryResultApi;
+
+    @Autowired
     private QueryApi<User> queryApi;
 
     @Autowired
@@ -31,7 +35,7 @@ public class UserService {
     private UpdateApi updateApi;
 
     public Result list(Integer pageNo){
-        return ResultUtil.writeSuccess(queryApi.listData(User.class,pageNo,"",null));
+        return queryResultApi.listData(User.class,pageNo);
     }
 
     public Result save(User user){

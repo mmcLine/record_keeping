@@ -1,8 +1,7 @@
 package com.mmc.work.bean.order;
 
-import com.alibaba.fastjson.JSONObject;
-import com.mmc.work.api.OrderApi;
 import com.mmc.assist.result.Result;
+import com.mmc.work.api.OrderApi;
 import com.mmc.work.bean.dateperiod.DatePeriod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,8 +30,4 @@ public class OrderController implements OrderApi {
         return orderService.listByDate(datePeriod.getStartDate(),datePeriod.getEndDate());
     }
 
-    @Override
-    public JSONObject monthchart() {
-        return orderService.monthchart();
-    }
 }

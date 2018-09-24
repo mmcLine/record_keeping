@@ -1,6 +1,5 @@
 package com.mmc.utils;
 
-import com.mmc.assist.login.MyUser;
 import org.springframework.context.ApplicationContext;
 
 public class SpringContextUtil {
@@ -29,8 +28,8 @@ public class SpringContextUtil {
 
 
     //获取当前登录的MyUser对象
-    public static MyUser getLoginUser(){
-        return applicationContext.getBean(MyUser.class);
-    }
+//    public static MyUser getLoginUser(){
+//        return applicationContext.getBean(MyUser.class);
+//    }
   
 } 

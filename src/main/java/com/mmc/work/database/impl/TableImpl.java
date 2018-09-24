@@ -48,6 +48,18 @@ public class TableImpl implements TableApi {
     }
 
     @Override
+    public String getTable(String className) {
+        String fullClassName = "com.mmc.work.bean." + className.toLowerCase() + "."
+                + className;
+        try {
+            return this.getTable( Class.forName(fullClassName));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    @Override
     public boolean hasPropertis(Class clazz, String fldName) {
         try{
             PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(clazz, fldName);

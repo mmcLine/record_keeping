@@ -1,12 +1,9 @@
 package com.mmc.work.bean.user;
 
-import com.mmc.work.api.UserApi;
 import com.mmc.assist.result.Result;
-import org.springframework.beans.BeanUtils;
+import com.mmc.work.api.UserApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.beans.PropertyDescriptor;
 
 @RestController
 public class UserController implements UserApi {
@@ -29,12 +26,5 @@ public class UserController implements UserApi {
         return userService.updPasswd(user,oldPasswd,newPasswd);
     }
 
-    public static void main(String[] args) {
-        PropertyDescriptor family = BeanUtils.getPropertyDescriptor(User.class, "ff");
-        System.out.println(family);
-        System.out.println(family.isPreferred());
-        System.out.println(family.isConstrained());
-        System.out.println(family.isHidden());
 
-    }
 }

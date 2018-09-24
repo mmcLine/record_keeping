@@ -4,6 +4,7 @@ import com.mmc.utils.SHA512;
 import com.mmc.work.bean.user.User;
 import com.mmc.work.database.api.QueryApi;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,6 +12,7 @@ public class LoginService {
 
 
     @Autowired
+    @Qualifier("queryImplNoAuthority")
     private QueryApi<User> queryApi;
 
     public User checkLogin(String username,String password){

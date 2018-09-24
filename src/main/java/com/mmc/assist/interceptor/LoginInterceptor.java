@@ -1,8 +1,9 @@
 package com.mmc.assist.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.mmc.assist.login.Idu;
+import com.mmc.assist.login.MyUser;
 import com.mmc.assist.result.ResultUtil;
-import com.mmc.utils.SpringContextUtil;
 import com.mmc.work.bean.user.UserController;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -17,20 +18,23 @@ import javax.servlet.http.HttpServletResponse;
  * @Version 1.0
  */
 
-public class RecordInterceptor implements HandlerInterceptor {
+public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(SpringContextUtil.getLoginUser().getUser()!=null){
-            LoggerFactory.getLogger(RecordInterceptor.class).info("验证用户登录中...已登录,请继续操作");
+        MyUser myUser=(MyUser) request.getSession().getAttribute(Idu.LOGIN_USER);
+        if(myUser!=null){
+            LoggerFactory.getLogger(LoginInterceptor.class).info("验证用户登录中...已登录,请继续操作");
+            Idu.init(myUser);
             return true;
         }else{
             LoggerFactory.getLogger(UserController.class).warn("验证用户登录中...未登录,立即跳转登录页面");
-            response.setHeader("Access-Control-Allow-Origin","*");
+            response.setHeader("Access-Control-Allow-Origin","http://www.mmcao.top:8091");
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, DELETE, PUT");
             response.setHeader("Access-Control-Max-Age", "3600");
             response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//            response.setCharacterEncoding("utf-8");
             response.getWriter().print(JSON.toJSON(ResultUtil.writeLogout()));
             return false;
         }

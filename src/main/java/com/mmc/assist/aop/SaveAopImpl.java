@@ -1,6 +1,6 @@
 package com.mmc.assist.aop;
 
-import com.mmc.utils.SpringContextUtil;
+import com.mmc.assist.login.Idu;
 import com.mmc.work.base.BeanBase;
 import com.mmc.work.base.IdBase;
 import org.aspectj.lang.JoinPoint;
@@ -34,8 +34,8 @@ public class SaveAopImpl {
             Object object=args[0];
             if(object instanceof BeanBase){
                 BeanBase bean=(BeanBase)object;
-                bean.setUser(SpringContextUtil.getLoginUser().getUser());
-                bean.setFamily(SpringContextUtil.getLoginUser().getFamily());
+                bean.setUser(Idu.getLoginUser().getUser());
+                bean.setFamily(Idu.getLoginUser().getFamily());
                 bean.setCreateTime(LocalDateTime.now());
             }else if(object instanceof IdBase){
                 IdBase bean=(IdBase)object;

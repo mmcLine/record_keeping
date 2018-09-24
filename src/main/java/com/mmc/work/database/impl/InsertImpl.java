@@ -3,6 +3,7 @@ package com.mmc.work.database.impl;
 import com.mmc.work.base.IdBase;
 import com.mmc.work.database.api.InsertApi;
 import com.mmc.work.database.api.TableApi;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -28,7 +29,7 @@ import java.util.List;
 @Component
 public class InsertImpl<T extends IdBase> implements InsertApi<T> {
 
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(InsertImpl.class);
+    private Logger logger =LoggerFactory.getLogger(InsertImpl.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -64,6 +65,7 @@ public class InsertImpl<T extends IdBase> implements InsertApi<T> {
             }
         }
         sql.append(")");
+        logger.info("执行插入数据库插入:"+sql);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 new PreparedStatementCreator(){
@@ -78,7 +80,6 @@ public class InsertImpl<T extends IdBase> implements InsertApi<T> {
                     }
                 },
                 keyHolder);
-
         return keyHolder.getKey().intValue();
     }
 
