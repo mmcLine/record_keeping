@@ -12,6 +12,7 @@ import com.mmc.work.database.api.QueryApi;
 import com.mmc.work.database.api.QueryResultApi;
 import com.mmc.work.database.api.UpdateApi;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,6 +32,9 @@ public class OrderService {
     @Autowired
     private QueryApi<Order> queryApi;
 
+    @Autowired
+    @Qualifier("queryImplNoAuthority")
+    private QueryApi<Order> queryApiNoAuth;
 
     @Autowired
     private QueryResultApi queryResultApi;
@@ -56,7 +60,7 @@ public class OrderService {
         //先判断权限，是否只能看到自己的,没有家庭权限，只查自己的数据
         if (Idu.getLoginUser().getFamily() == null) {
             String sql="SELECT DATE_FORMAT(t.trade_date,'%Y-%m') month,CAST( SUM(t.amt) AS DECIMAL (15, 2)) amtsum  FROM trade_order t where t.user=? GROUP BY MONTH";
-            List<Map<String,Object>> data=queryApi.query(sql,Idu.getLoginUser().getUser());
+            List<Map<String,Object>> data=queryApiNoAuth.query(Order.class,sql,Idu.getLoginUser().getUser());
             JSONArray monthArray = new JSONArray();
             JSONArray amtArray = new JSONArray();
             JSONArray nameArray = new JSONArray();
@@ -71,13 +75,13 @@ public class OrderService {
         } else {
             //获取10个月
             String[] currentMonth = getCurrentMonth(10);
-            List<Map<String, Object>> userList = queryApi.listOneFldByParams(Marriage.class, "user",null);
+            List<Map<String, Object>> userList = queryApiNoAuth.listOneFldByParams(Marriage.class, "user",null);
             JSONArray amtJson=new JSONArray();
             JSONArray namesArray=new JSONArray();
             for(Map<String, Object> userMap:userList){
                 JSONArray jsonArray=new JSONArray();
-                String sql="SELECT DATE_FORMAT(t.trade_date,'%Y-%m') month,SUM(t.amt) amtsum  FROM trade_order t where t.user=? GROUP BY MONTH";
-                List<Map<String, Object>> monthAmtList = queryApi.query(sql,userMap.get("user"));
+                String sql="SELECT DATE_FORMAT(t.trade_date,'%Y-%m') month,CAST( SUM(t.amt) AS DECIMAL (15, 2)) amtsum  FROM trade_order t where t.user=? GROUP BY MONTH";
+                List<Map<String, Object>> monthAmtList = queryApiNoAuth.query(Order.class,sql,userMap.get("user"));
                 for(int i=0;i<currentMonth.length;i++){
                     String month=currentMonth[i];
                     boolean flag=true;

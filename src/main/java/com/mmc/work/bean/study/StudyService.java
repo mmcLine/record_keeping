@@ -5,6 +5,7 @@ import com.mmc.assist.result.ResultUtil;
 import com.mmc.work.database.api.InsertApi;
 import com.mmc.work.database.api.QueryApi;
 import com.mmc.work.database.api.QueryResultApi;
+import com.mmc.work.database.api.UpdateApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +23,18 @@ public class StudyService {
     @Autowired
     private InsertApi insertApi;
 
+    @Autowired
+    private UpdateApi updateApi;
+
     public Result list(Integer pageNo){
         return queryResultApi.listData(Study.class,pageNo,null,"start_date",QueryApi.SQL_ORDER.ASC,null);
     }
 
     public Result save(Study study){
-        return ResultUtil.writeSuccess(insertApi.insert(study));
+        if(study.getPkey()==null){
+            return ResultUtil.writeSuccess(insertApi.insert(study));
+        }else {
+            return ResultUtil.writeSuccess(updateApi.update(study));
+        }
     }
 }

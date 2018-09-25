@@ -55,33 +55,7 @@ public class QueryResultImpl<T extends IdBase> implements QueryResultApi<T> {
 
     @Override
     public Result listData(Class clazz, Integer pageNo, String where, QueryApi.SQL_ORDER order, Integer pageSize) {
-        //参数检查
-        if(pageNo==null||pageNo==0){
-            pageNo=1;
-        }
-        if(order==null){
-            order=QueryApi.SQL_ORDER.DESC;
-        }
-        if(pageSize==null){
-            pageSize=PAGE_SIZE;
-        }
-        StringBuilder sql = new StringBuilder();
-        sql.append("select * from " + tableApi.getTable(clazz) + " where ");
-        sql.append(StringUtils.hasLength(where) ? where : "1=1");
-        sql.append(" and");
-        sql.append(getAuthorithWhere(clazz));
-        String countSql=sql.toString().replace("*","count(*)");
-        int start = (pageNo - 1) * pageSize;
-        int end = pageNo * pageSize;
-        sql.append(" ORDER BY pkey " + order);
-        sql.append(" limit " + start + "," + end);
-        logger.info("执行数据库查询：" + sql);
-        List<Map<String, Object>> mapList = jdbcTemplate.queryForList(sql.toString());
-        //加工
-        List<Map<String, Object>> resultList = extJoinData(mapList);
-        //计算总条数
-        Integer totalCount = jdbcTemplate.queryForObject(countSql, Integer.class);
-        return ResultUtil.writeSuccess(resultList,totalCount);
+      return this.listData(clazz, pageNo, where, "pkey",order, pageSize);
     }
 
     @Override
@@ -134,7 +108,7 @@ public class QueryResultImpl<T extends IdBase> implements QueryResultApi<T> {
     public Result listCombobox(Class clazz, QueryApi.SQL_ORDER order) {
         try {
             ExtName extName = (ExtName) clazz.newInstance();
-            String sql = MessageFormat.format("select pkey,{0} from {1} ORDER BY pkey {2}", extName.fldName(), tableApi.getTable(clazz),order);
+            String sql = MessageFormat.format("select pkey,{0} from {1} where {2} ORDER BY pkey {3}", extName.fldName(), tableApi.getTable(clazz),getAuthorithWhere(clazz),order);
             logger.info("执行数据库查询：" + sql);
             List<Map<String, Object>> mapList = jdbcTemplate.queryForList(sql);
             return ResultUtil.writeSuccess(mapList);

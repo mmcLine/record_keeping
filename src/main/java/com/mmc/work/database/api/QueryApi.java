@@ -49,6 +49,6 @@ public interface QueryApi<T> extends DataBaseApi  {
     List<Map<String,Object>> listManyFldByParams(Class clazz,String[] flds,String[] paramNames,Object... objects);
 
     //自定义where语句，自行权限判断
-    List<Map<String,Object>> query(String sql,Object...objects);
+    List<Map<String,Object>> query(Class clazz,String sql,Object...objects);
 
 }

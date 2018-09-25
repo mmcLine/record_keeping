@@ -25,12 +25,13 @@ public class AuthorithImpl implements AuthorithApi {
         if(Idu.getLoginUser().getUser()==null){
             return " 1=1 ";
         }
-        if (family != null && tableApi.hasPropertis(clazz, "family")) {
-            return " family=" + family;
+        Integer checkedUser=Idu.getLoginUser().getCheckedUser();
+        if (checkedUser==0 && tableApi.hasPropertis(clazz, "family")) {
+            return " family=" + family+" ";
         } else if (tableApi.hasPropertis(clazz, "user")) {
-            return  " user=" + Idu.getLoginUser().getUser();
+            return  " user=" + checkedUser+" ";
         } else if(clazz.equals(User.class)){
-            return " pkey=" + Idu.getLoginUser().getUser();
+            return " pkey=" + checkedUser+" ";
         }else {
             return " 1=1 ";
         }

@@ -42,6 +42,8 @@ public class LoginController {
                 myUser.setFamily(Integer.valueOf(family.get().toString()));
             }
             myUser.setUser(user.getPkey());
+            //默认只能看自己的数据
+            myUser.setCheckedUser(user.getPkey());
             request.getSession().setAttribute(Idu.LOGIN_USER,myUser);
             Idu.init(myUser);
 
