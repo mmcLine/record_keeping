@@ -34,7 +34,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, DELETE, PUT");
             response.setHeader("Access-Control-Max-Age", "3600");
             response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//            response.setCharacterEncoding("utf-8");
+            response.setCharacterEncoding("utf-8");
             response.getWriter().print(JSON.toJSON(ResultUtil.writeLogout()));
             return false;
         }
@@ -47,5 +47,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        response.setHeader("Access-Control-Allow-Origin","http://www.mmcao.top:8091");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, DELETE, PUT");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     }
 }

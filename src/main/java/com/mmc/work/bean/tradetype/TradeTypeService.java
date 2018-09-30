@@ -9,6 +9,9 @@ import com.mmc.work.database.api.UpdateApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @Author: mmc
  * @Date: 2018/8/28 22:46
@@ -26,6 +29,9 @@ public class TradeTypeService {
     @Autowired
     private UpdateApi updateApi;
 
+    @Autowired
+    private QueryApi<TradeType> queryApi;
+
     public Result listCombo(){
         return queryResultApi.listCombobox(TradeType.class,QueryApi.SQL_ORDER.ASC);
     }
@@ -37,5 +43,9 @@ public class TradeTypeService {
             updateApi.update(tradeType);
         }
         return ResultUtil.writeSuccess();
+    }
+
+    public List<Map<String,Object>> listNameAndPkey(){
+        return queryApi.listManyFldByParams(TradeType.class, new String[]{"pkey", "typeName"},new String[]{});
     }
 }

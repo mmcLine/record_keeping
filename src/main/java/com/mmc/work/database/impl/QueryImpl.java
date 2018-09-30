@@ -155,7 +155,7 @@ public class QueryImpl<T> implements QueryApi<T> {
         StringBuilder sql = new StringBuilder();
         sql.append("select ");
         for (int i = 0; i < flds.length; i++) {
-            sql.append(flds[i]);
+            sql.append(tableApi.getSqlCode(flds[i]));
             if (i < flds.length - 1) {
                 sql.append(",");
             }
@@ -163,7 +163,7 @@ public class QueryImpl<T> implements QueryApi<T> {
         sql.append(" from " + tableApi.getTable(clazz) + " where ");
         if(paramNames!=null){
             for (String param : paramNames) {
-                sql.append(param + "= ? and ");
+                sql.append(tableApi.getSqlCode(param) + "= ? and ");
             }
         }
         sql.append(getAuthorithWhere(clazz));

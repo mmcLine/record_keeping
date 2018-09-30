@@ -5,17 +5,27 @@ import com.alibaba.fastjson.JSONObject;
 import com.mmc.assist.login.Idu;
 import com.mmc.assist.result.Result;
 import com.mmc.assist.result.ResultUtil;
+import com.mmc.utils.DateUtil;
+import com.mmc.utils.RecordException;
 import com.mmc.work.bean.marriage.Marriage;
+import com.mmc.work.bean.tradetype.TradeTypeService;
 import com.mmc.work.bean.user.User;
 import com.mmc.work.database.api.InsertApi;
 import com.mmc.work.database.api.QueryApi;
 import com.mmc.work.database.api.QueryResultApi;
 import com.mmc.work.database.api.UpdateApi;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +41,9 @@ public class OrderService {
 
     @Autowired
     private QueryApi<Order> queryApi;
+
+    @Autowired
+    private TradeTypeService tradeTypeService;
 
     @Autowired
     @Qualifier("queryImplNoAuthority")
@@ -100,6 +113,53 @@ public class OrderService {
             JSONObject dataJson = new JSONObject().fluentPut("months", currentMonth).fluentPut("amts", amtJson).fluentPut("names", namesArray);
             return new JSONObject().fluentPut("size", namesArray.size()).fluentPut("data", dataJson);
 
+        }
+    }
+
+    public void importExcel(InputStream input){
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(input);
+            Sheet sheet = workbook.getSheetAt(0);
+            List<Map<String, Object>> typeList = tradeTypeService.listNameAndPkey();
+            // 工作表内的行数大于一行的读取数据
+            System.out.println(sheet.getLastRowNum());
+            for(int i=1;i<=sheet.getLastRowNum();i++){
+                Order order=new Order();
+                Row row = sheet.getRow(i);
+                //名称
+                if(row.getCell(0).getCellTypeEnum()==CellType._NONE){
+                   throw new RecordException("OrderService","名称不能为空");
+                }else {
+                    row.getCell(0).setCellType(CellType.STRING);
+                    order.setName(row.getCell(0).getStringCellValue());
+                }
+                //类别
+                if(row.getCell(1).getCellTypeEnum()!=CellType._NONE){
+                    row.getCell(1).setCellType(CellType.STRING);
+                    String typeName = row.getCell(1).getStringCellValue();
+                    typeList.forEach(x->{
+                        if(x.get("type_name").equals(typeName)){
+                            order.setTradeTypeId((int)(x.get("pkey")));
+                        }
+                    });
+                }
+                //日期
+                if(row.getCell(2).getCellTypeEnum()==CellType._NONE){
+                    throw new RecordException("OrderService","日期不能为空");
+                }else {
+                    Date value = row.getCell(2).getDateCellValue();
+                    order.setTradeDate(DateUtil.DatatoLocalDate(value));
+                }
+                //金额
+                if(row.getCell(3).getCellTypeEnum()==CellType._NONE){
+                    throw new RecordException("OrderService","金额不能为空");
+                }else {
+                    order.setAmt( row.getCell(3).getNumericCellValue());
+                }
+                insertApi.insert(order);
+            }
+        }catch (IOException e){
+            e.printStackTrace();
         }
     }
 
