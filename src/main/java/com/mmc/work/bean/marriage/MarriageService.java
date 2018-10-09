@@ -60,12 +60,15 @@ public class MarriageService {
     public Result list(Integer pageNo){
         if(Idu.getLoginUser().getFamily()!=null){
             List<Map<String,Object>> userList = queryApi.listOneFldByParams(Marriage.class, "user", new String[]{"family"}, Idu.getLoginUser().getFamily());
-            String userName1,userName2;
-            userName1= queryApi.findFldByPkey(User.class,"name",(int)userList.get(0).get("user")).toString();
-            userName2= queryApi.findFldByPkey(User.class,"name",(int)userList.get(1).get("user")).toString();
             JSONObject jsonObject=new JSONObject();
             jsonObject.put("name",queryApi.findFldByPkey(Family.class,"name",(int)Idu.getLoginUser().getFamily()));
-            jsonObject.put("member", userName1+"   ❤    "+userName2);
+            if(userList.size()==1){
+                //权限控制了查不到对方数据
+                jsonObject.put("member", userList.get(0).get("user_name")+"   ❤    保密");
+            }else {
+                jsonObject.put("member", userList.get(0).get("user_name")+"   ❤    "+userList.get(1).get("user_name"));
+            }
+
             return ResultUtil.writeSuccess(jsonObject);
         }else{
             return ResultUtil.writeSuccess(new JSONObject().fluentPut("name","单身狗").fluentPut("member","没对象"));
