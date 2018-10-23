@@ -26,8 +26,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -67,6 +69,12 @@ public class OrderService {
 
     public Result listByDate(LocalDate startDate, LocalDate endDate) {
        return queryResultApi.listData(Order.class,1,"trade_date BETWEEN '" + startDate + "' AND '" + endDate + "'",null);
+    }
+
+    public Result names() {
+        List<Map<String, Object>> list = queryApi.query(Order.class, "SELECT name FROM trade_order WHERE create_time > DATE_ADD(NOW(),INTERVAL -3 MONTH)");
+        Map<String,String> names=new HashMap<>();
+        return ResultUtil.writeSuccess( list.stream().distinct().collect(Collectors.toList()));
     }
 
     public JSONObject monthchart() {

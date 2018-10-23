@@ -41,4 +41,9 @@ public class OrderController implements OrderApi {
         return ResultUtil.writeSuccess();
     }
 
+    @Override
+    public Result names() {
+        return orderService.names();
+    }
+
 }

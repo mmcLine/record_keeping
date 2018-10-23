@@ -178,7 +178,6 @@ public class QueryImpl<T> implements QueryApi<T> {
         if(lowerSql.contains("where")){
             sql=sql.replace("where","where"+getAuthorithWhere(clazz)+"and ");
             sql=sql.replace("WHERE","where"+getAuthorithWhere(clazz)+"and ");
-
         }else {
             if(lowerSql.contains("order by")||lowerSql.contains("limit")||lowerSql.contains("join")){
                 throw new RecordException("QueryImpl","暂不支持复杂的查询");

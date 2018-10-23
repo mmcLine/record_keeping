@@ -21,8 +21,11 @@ public interface OrderApi {
     @RequestMapping("record/order/datelist")
     Result orderList(DatePeriod datePeriod);
 
-    //日期搜索
+    //数据导入
     @RequestMapping("record/order/importExcel")
     Result importExcel(@RequestParam("file") MultipartFile file) throws IOException;
 
+    //输入建议搜索，返回近期的输入项
+    @RequestMapping("record/order/names")
+    Result names();
 }
