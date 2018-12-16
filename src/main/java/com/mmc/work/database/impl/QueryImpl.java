@@ -230,7 +230,7 @@ public class QueryImpl<T> implements QueryApi<T> {
                     } else if (field.getType() == String.class) {
                         method.invoke(t, sqlRowSet.getString(fieldCode));
                     } else if (field.getType() == LocalDate.class) {
-                        java.sql.Date date = sqlRowSet.getDate(field.getName());
+                        java.sql.Date date = sqlRowSet.getDate(fieldCode);
                         if (date != null) {
                             method.invoke(t, DateUtil.DatatoLocalDate(new Date(date.getTime())));
                         }

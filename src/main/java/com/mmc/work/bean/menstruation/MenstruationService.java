@@ -42,7 +42,7 @@ public class MenstruationService {
     public Result save(Menstruation menstruation){
        //新增
         if(menstruation.getPkey()==null){
-            List<Menstruation> menslist = queryApi.listByWhere(Menstruation.class, "ORDER BY mens_date DESC LIMIT 1 ");
+            List<Menstruation> menslist = queryApi.listByWhere(Menstruation.class, " 1=1 ORDER BY mens_date DESC LIMIT 1 ");
             if(CollectionUtils.isEmpty(menslist)){
                 menstruation.setCycle(CYCLE);
             }else {
